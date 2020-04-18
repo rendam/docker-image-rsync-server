@@ -7,8 +7,24 @@ fi
 
 USERNAME=${USERNAME:-rsync}
 PASSWORD=${PASSWORD:-rsync}
-ALLOW=${ALLOW:-192.168.0.0/16 172.16.0.0/12 127.0.0.1/32}
+SSHPORT=${SSHPORT:-22}
+ALLOW=${ALLOW:-192.168.0.0/16 172.16.0.0/12 10.0.0.0/24 127.0.0.1/32}
 VOLUME=${VOLUME:-/data}
+
+# Delete old PID file on reboot
+rm -f /var/run/rsyncd.pid
+
+# Set Allowed hosts and ports for SSH as well
+ALLOWEDHOSTS=( $ALLOW ) 
+for h in "${ALLOWEDHOSTS[@]}"
+do
+    echo "sshd : $h : allow" >> /etc/hosts.allow
+done
+echo "sshd : ALL : deny" >> /etc/hosts.allow
+
+# Restarts not needed. Started later on this script anyway
+sed -i "s/.*Port 22/Port $SSHPORT/g" /etc/ssh/sshd_config
+
 
 if [ "$1" = 'rsync_server' ]; then
 
@@ -27,7 +43,7 @@ if [ "$1" = 'rsync_server' ]; then
 
     [ -f /etc/rsyncd.conf ] || cat <<EOF > /etc/rsyncd.conf
     pid file = /var/run/rsyncd.pid
-    log file = /dev/stdout
+    log file = /var/log/rsync.log
     timeout = 300
     max connections = 10
     port = 873

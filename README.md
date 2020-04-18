@@ -57,10 +57,11 @@ total size is 0  speedup is 0.00
 
 Variable options (on run)
 
-* `USERNAME` - the `rsync` username. defaults to `user`
-* `PASSWORD` - the `rsync` password. defaults to `pass`
+* `USERNAME` - the `rsync` username. defaults to `rsync`
+* `PASSWORD` - the `rsync` password. defaults to `rsync`
+* `SSHPORT`  - the port to use for SSH. Defaults to 22. This option should only be used when running on a separatre IP address
 * `VOLUME`   - the path for `rsync`. defaults to `/data`
-* `ALLOW`    - space separated list of allowed sources. defaults to `192.168.0.0/16 172.16.0.0/12`.
+* `ALLOW`    - space separated list of allowed sources (rsync and ssh). defaults to `192.168.0.0/16 172.16.0.0/12 10.0.0.0/24 127.0.0.1/32`.
 * `WAIT_INT` - wait for this interface to appear before starting services, for use with pipeworks.
 
 
