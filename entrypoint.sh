@@ -14,6 +14,9 @@ VOLUME=${VOLUME:-/data}
 # Delete old PID file on reboot
 rm -f /var/run/rsyncd.pid
 
+# Clear old allowances
+cat /dev/null > /etc/hosts.allow
+
 # Set Allowed hosts and ports for SSH as well
 ALLOWEDHOSTS=( $ALLOW ) 
 for h in "${ALLOWEDHOSTS[@]}"
@@ -23,7 +26,7 @@ done
 echo "sshd : ALL : deny" >> /etc/hosts.allow
 
 # Restarts not needed. Started later on this script anyway
-sed -i "s/.*Port 22/Port $SSHPORT/g" /etc/ssh/sshd_config
+sed -i "s/.*Port 22.*/Port $SSHPORT/g" /etc/ssh/sshd_config
 
 
 if [ "$1" = 'rsync_server' ]; then
